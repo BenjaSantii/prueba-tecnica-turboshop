@@ -1,11 +1,13 @@
 import { Injectable, OnModuleInit, Logger } from '@nestjs/common'
 import { PartsService } from './parts.service'
+import { EventsService } from './events.service'
 import { GlobalpartsService } from '../providers/globalparts/globalparts.service'
 import { RepuestosMaxService } from '../providers/repuestosmax/repuestosmax.service'
 import { AutoPartsPlusService } from '../providers/autopartsplus/autopartsplus.service'
 import { mapGlobalpartsToPart } from '../providers/globalparts/globalparts.mapper'
 import { mapRepuestosMaxToPart } from '../providers/repuestosmax/repuestosmax.mapper'
 import { mapAutoPartsPlusToPart } from '../providers/autopartsplus/autopartsplus.mapper'
+import type { Part, Provider } from './part.type'
 
 const SYNC_INTERVAL_MS = 30_000
 
@@ -23,11 +25,30 @@ export class SyncService implements OnModuleInit {
   private readonly logger = new Logger(SyncService.name)
 
   constructor(
-    private readonly partsService:       PartsService,
-    private readonly globalpartsService:  GlobalpartsService,
-    private readonly repuestosMaxService: RepuestosMaxService,
+    private readonly partsService:         PartsService,
+    private readonly eventsService:        EventsService,
+    private readonly globalpartsService:   GlobalpartsService,
+    private readonly repuestosMaxService:  RepuestosMaxService,
     private readonly autoPartsPlusService: AutoPartsPlusService,
   ) {}
+
+  // Compara nuevos parts con el store actual y emite eventos por cada cambio
+  private detectChanges(provider: Provider, newParts: Part[]): void {
+    for (const newPart of newParts) {
+      const old = this.partsService.getPartFromStore(provider, newPart.sku)
+      if (!old) continue  // parte nueva, no es un cambio
+
+      if (old.price !== newPart.price || old.stock !== newPart.stock) {
+        this.eventsService.emit({
+          sku:      newPart.sku,
+          provider,
+          price:    newPart.price,
+          currency: newPart.currency,
+          stock:    newPart.stock,
+        })
+      }
+    }
+  }
 
   onModuleInit() {
     this.sync()
@@ -75,7 +96,9 @@ export class SyncService implements OnModuleInit {
         ...rest.flatMap((r) => r.ResponseEnvelope.Body.CatalogListing.Items),
       ]
 
-      this.partsService.updateStore('globalparts', allItems.map(mapGlobalpartsToPart))
+      const newParts = allItems.map(mapGlobalpartsToPart)
+      this.detectChanges('globalparts', newParts)
+      this.partsService.updateStore('globalparts', newParts)
     } catch (err) {
       this.logger.error('GlobalParts no disponible — manteniendo caché anterior', err)
     }
@@ -110,7 +133,9 @@ export class SyncService implements OnModuleInit {
         ...rest.flatMap((r) => r.productos),
       ]
 
-      this.partsService.updateStore('repuestosmax', allProductos.map(mapRepuestosMaxToPart))
+      const newParts = allProductos.map(mapRepuestosMaxToPart)
+      this.detectChanges('repuestosmax', newParts)
+      this.partsService.updateStore('repuestosmax', newParts)
     } catch (err) {
       this.logger.error('RepuestosMax no disponible — manteniendo caché anterior', err)
     }
@@ -145,7 +170,9 @@ export class SyncService implements OnModuleInit {
         ...rest.flatMap((r) => r.parts),
       ]
 
-      this.partsService.updateStore('autopartsplus', allParts.map(mapAutoPartsPlusToPart))
+      const newParts = allParts.map(mapAutoPartsPlusToPart)
+      this.detectChanges('autopartsplus', newParts)
+      this.partsService.updateStore('autopartsplus', newParts)
     } catch (err) {
       this.logger.error('AutoPartsPlus no disponible — manteniendo caché anterior', err)
     }

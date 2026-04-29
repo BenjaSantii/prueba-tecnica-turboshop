@@ -1,11 +1,22 @@
-import { Controller, Get, Param, Query } from '@nestjs/common'
+import { Controller, Get, Param, Query, Sse } from '@nestjs/common'
+import { Observable } from 'rxjs'
 import { PartsService } from './parts.service'
+import { EventsService } from './events.service'
 import type { PartDetail } from './part.type'
 
 @Controller('parts')
 export class PartsController {
 
-  constructor(private readonly partsService: PartsService) {}
+  constructor(
+    private readonly partsService:  PartsService,
+    private readonly eventsService: EventsService,
+  ) {}
+
+  // GET /parts/events  →  stream SSE de cambios de precio/stock
+  @Sse('events')
+  stream(): Observable<MessageEvent> {
+    return this.eventsService.getStream()
+  }
 
   // GET /parts?query=filtro&brand=KYB&make=Toyota&year=2015&page=1&limit=20
   @Get()

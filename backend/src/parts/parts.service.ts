@@ -44,6 +44,12 @@ export class PartsService {
     ]
   }
 
+  // ─── Usado por SyncService para comparar antes de actualizar ─────────────
+
+  getPartFromStore(provider: Provider, sku: string): Part | undefined {
+    return this.stores[provider].get(sku)
+  }
+
   // ─── Catálogo con filtros y paginación ───────────────────────────────────
 
   getCatalog(filters: SearchFilters, page = 1, limit = 20): PaginatedResult {

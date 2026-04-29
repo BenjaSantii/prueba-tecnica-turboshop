@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common'
 import { PartsController } from './parts.controller'
 import { PartsService } from './parts.service'
 import { SyncService } from './sync.service'
+import { EventsService } from './events.service'
 import { GlobalpartsModule } from '../providers/globalparts/globalparts.module'
 import { RepuestosMaxModule } from '../providers/repuestosmax/repuestosmax.module'
 import { AutoPartsPlusModule } from '../providers/autopartsplus/autopartsplus.module'
@@ -13,6 +14,6 @@ import { AutoPartsPlusModule } from '../providers/autopartsplus/autopartsplus.mo
     AutoPartsPlusModule,
   ],
   controllers: [PartsController],
-  providers:   [PartsService, SyncService],
+  providers:   [PartsService, SyncService, EventsService],
 })
 export class PartsModule {}
