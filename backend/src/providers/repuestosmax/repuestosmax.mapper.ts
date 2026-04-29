@@ -1,5 +1,5 @@
-import { Part, VehicleCompatibility } from '../../../parts/types/part.type'
-import { RepuestosMaxProductoDto } from '../repuestosmax.dto'
+import { Part, VehicleCompatibility } from '../../parts/part.type'
+import { RepuestosMaxProductoDto } from './repuestosmax.dto'
 
 
 function mapVehicles(producto: RepuestosMaxProductoDto): VehicleCompatibility[] {

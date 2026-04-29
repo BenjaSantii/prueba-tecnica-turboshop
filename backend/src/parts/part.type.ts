@@ -38,3 +38,29 @@ export interface Part {
   specs: Record<string, string>
   vehicleCompatibility: VehicleCompatibility[]
 }
+
+export interface PartOffer {
+  provider:           Provider
+  price:              number
+  currency:           string
+  taxIncluded:        boolean
+  discountAvailable:  boolean
+  stock:              number
+  warehouse:          string
+  estimatedDispatch?: string
+}
+
+export interface PartDetail {
+  found:                boolean
+  sku:                  string
+  oemCode:              string
+  name:                 string
+  brand:                string
+  category:             string
+  description:          string
+  images:               string[]
+  weight?:              { value: number; unit: string }
+  specs:                Record<string, string>
+  vehicleCompatibility: VehicleCompatibility[]
+  offers:               PartOffer[]
+}

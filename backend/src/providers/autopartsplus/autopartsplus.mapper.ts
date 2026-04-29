@@ -1,5 +1,5 @@
-import { Part, VehicleCompatibility } from '../../../parts/types/part.type'
-import { AutoPartsPlusPartDto } from '../autopartsplus.dto'
+import { Part, VehicleCompatibility } from '../../parts/part.type'
+import { AutoPartsPlusPartDto } from './autopartsplus.dto'
 
 // Parsea strings como "Nissan Frontier 2009-2014 SR5" o "Ford Edge 2006-2008 3.5L V6"
 function parseVehicleString(raw: string): VehicleCompatibility | null {

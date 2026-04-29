@@ -1,5 +1,5 @@
-import { Part, VehicleCompatibility } from '../../../parts/types/part.type'
-import { GlobalpartsItemDto } from '../globalparts.dto'
+import { Part, VehicleCompatibility } from '../../parts/part.type'
+import { GlobalpartsItemDto } from './globalparts.dto'
 
 
 function mapVehicles(item: GlobalpartsItemDto): VehicleCompatibility[] {
