@@ -67,6 +67,14 @@ export interface GlobalpartsItemDto {
   }
 }
 
+// ─── Footer compartido entre catálogo y búsqueda ─────────────────────────────
+
+interface GlobalpartsFooterDto {
+  ResponseStatus: { StatusCode: string; StatusMessage: string }
+  Pagination: { HasMoreResults: boolean }
+  RateLimitInfo: { RemainingRequests: number; ResetTimestamp: string }
+}
+
 // ─── Respuesta: GET /inventory/catalog ───────────────────────────────────────
 
 export interface GlobalpartsCatalogResponseDto {
@@ -94,6 +102,7 @@ export interface GlobalpartsCatalogResponseDto {
         Items: GlobalpartsItemDto[]
       }
     }
+    Footer: GlobalpartsFooterDto
   }
 }
 
@@ -118,11 +127,7 @@ export interface GlobalpartsSearchResponseDto {
         Items: GlobalpartsItemDto[]
       }
     }
-    Footer: {
-      ResponseStatus: { StatusCode: string; StatusMessage: string }
-      Pagination: { HasMoreResults: boolean }
-      RateLimitInfo: { RemainingRequests: number; ResetTimestamp: string }
-    }
+    Footer: GlobalpartsFooterDto
   }
 }
 
