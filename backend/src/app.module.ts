@@ -4,7 +4,7 @@ import { PartsModule } from './parts/parts.module'
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
+    ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env.local' }),
     PartsModule,
   ],
 })
