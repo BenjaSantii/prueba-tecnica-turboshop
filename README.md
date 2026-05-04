@@ -29,7 +29,8 @@ PORT=3000
 La documentación interactiva (Swagger UI) está disponible en:
 
 ```
-http://localhost:3000/api
+http://localhost:3000/api                                                    (local)
+https://prueba-tecnica-turboshop-production.up.railway.app/api               (producción)
 ```
 
 Permite explorar y probar todos los endpoints directamente desde el browser.
