@@ -1,4 +1,5 @@
 import { Controller, Get, Param, Query, Sse } from '@nestjs/common'
+import { ApiExcludeEndpoint, ApiOperation, ApiQuery } from '@nestjs/swagger'
 import { Observable } from 'rxjs'
 import { PartsService } from './parts.service'
 import { EventsService } from './events.service'
@@ -12,13 +13,19 @@ export class PartsController {
     private readonly eventsService: EventsService,
   ) {}
 
-  // GET /parts/events  →  stream SSE de cambios de precio/stock
+  @ApiExcludeEndpoint()
   @Sse('events')
   stream(): Observable<MessageEvent> {
     return this.eventsService.getStream()
   }
 
   // GET /parts?query=filtro&brand=KYB&make=Toyota&year=2015&page=1&limit=20
+  @ApiQuery({ name: 'query', required: false, description: 'Texto libre (nombre, marca, código OEM)' })
+  @ApiQuery({ name: 'brand', required: false, description: 'Filtrar por marca' })
+  @ApiQuery({ name: 'make',  required: false, description: 'Filtrar por fabricante de vehículo' })
+  @ApiQuery({ name: 'year',  required: false, description: 'Filtrar por año de compatibilidad' })
+  @ApiQuery({ name: 'page',  required: false, description: 'Número de página (default: 1)' })
+  @ApiQuery({ name: 'limit', required: false, description: 'Resultados por página (default: 20)' })
   @Get()
   getCatalog(
     @Query('query') query?: string,
