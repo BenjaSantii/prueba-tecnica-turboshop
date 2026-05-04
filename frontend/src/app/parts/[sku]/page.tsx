@@ -51,19 +51,32 @@ export default async function PartDetailPage({ params }: PageProps) {
         {/* Left column */}
         <div className="space-y-8">
           {/* Images */}
-          {detail.images.length > 0 && (() => {
-            const resolved = detail.images.map((url, i) => resolveImage(url, detail.sku, detail.category, i))
+          {(() => {
+            const resolved = detail.images
+              .map((url) => resolveImage(url, detail.category))
+              .filter((src): src is string => src !== null)
+            const mainSrc = resolved[0] ?? null
+
             return (
               <div className="space-y-2">
-                <div className="relative w-full aspect-[16/9] rounded-xl overflow-hidden bg-[#F0EEE9]">
-                  <Image
-                    src={resolved[0]}
-                    alt={detail.name}
-                    fill
-                    priority
-                    sizes="(max-width: 1024px) 100vw, 800px"
-                    className="object-cover"
-                  />
+                <div className="relative w-full aspect-[16/9] rounded-xl overflow-hidden bg-[#F0EEE9] flex items-center justify-center">
+                  {mainSrc ? (
+                    <Image
+                      src={mainSrc}
+                      alt={detail.name}
+                      fill
+                      priority
+                      sizes="(max-width: 1024px) 100vw, 800px"
+                      className="object-cover"
+                    />
+                  ) : (
+                    <div className="flex flex-col items-center gap-2 text-[#0F0E0D]/20">
+                      <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                      <span className="text-xs uppercase tracking-widest">Imagen no disponible</span>
+                    </div>
+                  )}
                 </div>
                 {resolved.length > 1 && (
                   <div className="flex gap-2 overflow-x-auto pb-1">

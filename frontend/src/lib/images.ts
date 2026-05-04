@@ -24,12 +24,11 @@ function isFake(url: string): boolean {
   return !url || FAKE_HOSTS.some((h) => url.includes(h))
 }
 
-export function resolveImage(url: string, sku: string, category?: string, index = 0): string {
+export function resolveImage(url: string, category?: string): string | null {
   if (!isFake(url)) return url
-  if (category && CATEGORY_IMAGES[category]) return CATEGORY_IMAGES[category]
-  return `https://picsum.photos/seed/${sku}-${index}/600/400`
+  return CATEGORY_IMAGES[category ?? ''] ?? null
 }
 
-export function getCardImage(images: string[], sku: string, category?: string): string {
-  return resolveImage(images[0] ?? '', sku, category, 0)
+export function getCardImage(images: string[], category?: string): string | null {
+  return resolveImage(images[0] ?? '', category)
 }
